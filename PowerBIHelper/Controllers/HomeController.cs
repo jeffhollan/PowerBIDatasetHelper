@@ -45,7 +45,7 @@ namespace PowerBIHelper.Controllers
 
         public RedirectResult startauth()
         {
-            return new RedirectResult("http://bing.com");
+            return new RedirectResult(String.Format("https://login.windows.net/common/oauth2/authorize?response_type=code&client_id={0}&resource={1}&redirect_uri={2}", ConfigurationManager.AppSettings["clientId"], HttpUtility.UrlEncode("https://analysis.windows.net/powerbi/api"), HttpUtility.UrlEncode(ConfigurationManager.AppSettings["redirect"].ToLower())));
         }
     }
 }
