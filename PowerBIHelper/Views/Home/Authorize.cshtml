@@ -1,0 +1,14 @@
+﻿
+@{
+    ViewBag.Title = "Authorize";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Completed Successfully</h2>
+
+<h3>DatasetID: <b>@ViewBag.datasetid</b></h3>
+
+<p>You have successfully been authenticated into Power BI, your dataset ID is @ViewBag.datasetid</p>
+<p>If you browse to <a href="https://app.powerbi.com">Power BI</a> you will see the dataset <b>LogicAppsHealth</b> listed with the correct properties.</p>
+<br />
+<p>You can view the schema for the dataset that was published <a href="https://raw.githubusercontent.com/jeffhollan/MSHealthAPI/master/Power%20BI%20Dataset%20Schema.json">here.</a></p>
