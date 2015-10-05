@@ -1,7 +1,11 @@
-﻿using System;
+﻿using Microsoft.IdentityModel.Clients.ActiveDirectory;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 
@@ -16,23 +20,32 @@ namespace PowerBIHelper.Controllers
 
         public async System.Threading.Tasks.Task<ActionResult> Authorize(string code)
         {
-            ViewBag.Message = "Your application description page.";
-            ViewBag.datasetid = "12345-6789";
-            string powerBISchema = "Unable to retrieve schema";
-            using (var client = new HttpClient())
+            try
             {
-                var schemaResult = await client.GetAsync("https://raw.githubusercontent.com/jeffhollan/MSHealthAPI/master/Power%20BI%20Dataset%20Schema.json");
-                powerBISchema = await schemaResult.Content.ReadAsStringAsync();
+                string powerBISchema = "Unable to retrieve schema";
+                using (var client = new HttpClient())
+                {
+                    var schemaResult = await client.GetAsync("https://raw.githubusercontent.com/jeffhollan/MSHealthAPI/master/Power%20BI%20Dataset%20Schema.json");
+                    powerBISchema = await schemaResult.Content.ReadAsStringAsync();
+                    AuthenticationContext AC = new AuthenticationContext("https://login.windows.net/common/oauth2/authorize/");
+                    ClientCredential cc = new ClientCredential(ConfigurationManager.AppSettings["clientId"], ConfigurationManager.AppSettings["clientSecret"]);
+                    AuthenticationResult ar = await AC.AcquireTokenByAuthorizationCodeAsync(code, new Uri(ConfigurationManager.AppSettings["redirect"].ToLower()), cc);
+                    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", ar.AccessToken);
+                    var createResult = await client.PostAsync("https://api.powerbi.com/v1.0/myorg/datasets?defaultRetentionPolicy=None", new StringContent(powerBISchema, Encoding.UTF8, "application/json"));
+                    var resultString = await createResult.Content.ReadAsStringAsync();
+                    ViewBag.datasetid = (string)JObject.Parse(resultString)["id"];
+                }
+                return View();
             }
-            ViewBag.schema = powerBISchema;
-            return View();
+            catch (Exception ex)
+            {
+                return View("Error");
+            }
         }
 
-        public ActionResult Contact()
+        public RedirectResult startauth()
         {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
+            return new RedirectResult("http://bing.com");
         }
     }
 }

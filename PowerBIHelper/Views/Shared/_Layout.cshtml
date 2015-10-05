@@ -3,10 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <title>Power BI Helper - Jeff Hollan</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
-
+    <style>
+        .button {
+            display: block;
+            width: 300px;
+            height: 40px;
+            background: #f2c811;
+            padding: 10px;
+            text-align: center;
+            color: black;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+    </style>
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -30,6 +42,7 @@
         @RenderBody()
         <hr />
         <footer>
+            <p>Created by Jeff Hollan - <a href="http://hollan.io">http://hollan.io</a></p>
             <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
         </footer>
     </div>
